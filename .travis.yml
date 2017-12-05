@@ -35,8 +35,11 @@ install:
 script:
   - composer lint
 
+  # check coding standards
+  - composer cs
+
   # this checks that the application doesn't use dependencies with known security vulnerabilities
-  - ./bin/security-checker
+  - ./bin/security-checker security:check
 
   # this checks that Doctrine's mapping configurations are valid
   #- ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction

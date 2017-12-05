@@ -17,6 +17,7 @@
         "symfony/yaml": "^4.0"
     },
     "require-dev": {
+        "escapestudios/symfony2-coding-standard": "3.x-dev",
         "friendsofphp/php-cs-fixer": "^2.8",
         "phpstan/phpstan": "^0.9.1",
         "sensiolabs/security-checker": "^4.1",
@@ -59,7 +60,7 @@
         "test": "bin/phpunit -c phpunit.xml  --no-coverage",
         "coverage": "phpdbg -qrr bin/phpunit --coverage-html coverage",
         "lint": "bin/console lint:yaml config && composer validate && bin/phpstan analyse src --level max",
-        "cs": "bin/phpcs --extensions=php src",
+        "cs": "bin/phpcs --extensions=php --standard=PSR2 src",
         "cs:fix": "bin/php-cs-fixer fix src"
     },
     "conflict": {
