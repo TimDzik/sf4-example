@@ -28,7 +28,7 @@ before_install:
   - composer global require "hirak/prestissimo"
 
 install:
-  - composer install --prefer-dist --no-suggest --classmap-authoritative --no-interaction \
+  - composer install --prefer-dist --no-suggest --classmap-authoritative --no-interaction
   - bin/simple-phpunit install
 
 script:
