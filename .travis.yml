@@ -33,15 +33,12 @@ install:
   - bin/simple-phpunit install
 
 script:
-  # this checks that the YAML config files contain no syntax errors
-  - ./bin/console lint:yaml config
-  # this checks that the Twig template files contain no syntax errors
-  #- ./bin/console lint:twig templates
+  - composer lint
+
   # this checks that the application doesn't use dependencies with known security vulnerabilities
-  #- ./bin/console security:check --end-point=http://security.sensiolabs.org/check_lock
+  - ./bin/security-checker
 
   # this checks that Doctrine's mapping configurations are valid
   #- ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-  - composer lint
 
   - composer test
