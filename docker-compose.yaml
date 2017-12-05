@@ -1,0 +1,103 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+
+    #depends_on:
+      #- db
+      #- cache
+    env_file:
+      - ./.env
+    environment:
+
+      # ======================================================================================
+      # Configurations required to have xdebug working with PHPStorm.
+      # The remote_host should be set to your local machine IP Address
+      # and the PHP_IDE_CONFIG should match
+      # the name of the "PHP Remote debug" configurations.
+      # See: https://medium.com/@pablofmorales/xdebug-with-docker-and-phpstorm-786da0d0fad2
+      # ======================================================================================
+      XDEBUG_CONFIG: "remote_host=${XDEBUG_REMOTE_HOST:-127.0.0.1} remote_port=${XDEBUG_REMOTE_PORT:-9001}"
+      PHP_IDE_CONFIG: "serverName=${XDEBUG_SERVER_NAME:-Docker}"
+    volumes:
+      - ./:/srv/app:rw
+
+      # =======================================================================================
+      # This is needed to avoid permissions issues when writing to cache and logs.
+      # We just declare the "var" folder as a volume but without a mountpoint.
+      # This way the specified folders wont be mounted as a volume and the files are kept
+      # inside the container.
+      # =======================================================================================
+      - /srv/app/var/
+      - /srv/app/var/cache/
+      - /srv/app/var/log/
+      - /srv/app/var/sessions/
+    networks:
+      - flexapp
+  nginx:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.nginx
+    depends_on:
+      - app
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./public:/srv/app/public:ro
+    networks:
+      - flexapp
+    ports:
+      - '${APP_PORT:-8080}:80'
+    labels:
+        # allow to access the container by a friendly dns name.
+        # You must have Dnsdock installed on your machine
+        # See: https://github.com/aacebedo/dnsdock
+        com.dnsdock.alias: sf4.docker
+
+  #db:
+  #  image: mysql:5.7
+  #  env_file:
+  #    - .env
+  #  volumes:
+  #    - mysqldata:/var/lib/mysql
+  #  networks:
+  #    - flexapp
+
+  #cache:
+  #  image: memcached:1.5-alpine
+  #  networks:
+  #    - flexapp
+
+  #redis:
+  #  image: redis:3.2-alpine
+  #  networks:
+  #    - flexapp
+
+  # You get an error regarding vm.max_map_count, please follow the instructions on this page:
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+  #elasticsearch:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:6.0.0
+  #  environment:
+  #      - cluster.name=docker-cluster
+  #      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #  volumes:
+  #      - esdata:/usr/share/elasticsearch/data
+  #  ports:
+  #      - "9200"
+  #  networks:
+  #      - flexapp
+
+  #blackfire:
+  #    image: blackfire/blackfire
+  #    env_file:
+  #      - ./.env
+  #    networks:
+  #      - flexapp
+
+networks:
+  flexapp:
+
+#volumes:
+#  mysqldata:
+#  esdata:

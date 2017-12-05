@@ -1,0 +1,76 @@
+#!/bin/sh
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Helper function to load env variables from .env file
+dotenv () {
+  set -a
+  [ -f .env ] && . .env
+  set +a
+}
+
+# Displays help instructions for this command.
+display_help() {
+    echo "Usage: $0 [comamnd] <options>" >&2
+    echo
+    echo " - up [--build|--force-recreate]  Starts the application containers"
+    echo " - exec <app> <cmd>               Executes a command inside the specified container"
+    echo " - logs [app] [-f]                Show application logs"
+    echo " - sh                             Opens a shell in the application container"
+    echo " - console [command]              Runs a symfony console command"
+    echo " - tests                          Runs application unit tests"
+    echo " - coverage                       Runs application unit tests with Code Coverage report"
+    echo " - lint                           Runs a set of Linters on the application"
+    echo " - cs                             Runs coding standards checker"
+    echo " - cs:fix                         Runs php-cs-fixer to fix coding standards violations"
+    echo " - db                             Connects to the database console"
+    echo " - permissions:fix                Fix permissions issues than can result from user Docker"
+    echo
+    # echo some stuff here for the -a or --add-options
+    exit 1
+}
+
+main() {
+
+ if [ -z "$1" ]
+   then
+     display_help
+ fi
+
+ # Get the current host IP, needed for xdebug to allow remote debugging.
+ export XDEBUG_REMOTE_HOST=$(ifconfig eth0 | awk '/inet addr/{split($2,a,":"); print a[2]}')
+
+ case "$1" in
+    h)
+     display_help
+      ;;
+    sh)
+      docker-compose exec app sh
+      ;;
+    console)
+      shift;
+      docker-compose exec app bin/console $@
+      ;;
+    test|lint|coverage|cs|cs:fix)
+      command=$1
+      shift;
+      docker-compose exec app composer $command $@
+    ;;
+    db)
+      docker-compose exec db mysql -u ${MYSQL_USER} -p${MYSQL_PASSWORD}
+    ;;
+    permissions:fix)
+        sudo chown -R $USER:$USER .
+     ;;
+    *)
+      docker-compose "$@"
+      ;;
+  esac
+}
+
+# Loads env variables
+dotenv
+
+main "$@"

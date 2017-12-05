@@ -1,0 +1,31 @@
+{
+  "name": "sf-flex-demo",
+  "description": "Symfony Flex base application",
+  "keywords": [
+    "php",
+    "symfony"
+  ],
+  "image": "heroku/php",
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "",
+    "test-setup": "",
+    "test": "composer test"
+  },
+  "env": {
+    "APP_ENV": {
+      "value": "prod",
+      "description": "Symfony environment"
+    },
+    "APP_DEBUG": {
+      "value": "0"
+    },
+    "APP_SECRET": {
+      "description": "Extra entropy for %kernel.secret%; used for CSRF tokens, cookies and signed URLs.",
+      "generator": "secret"
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ]
+}
