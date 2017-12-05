@@ -1,6 +1,6 @@
 # sf-flex-demo
 
-[![Travis CI](https://img.shields.io/travis/brpaz/sf-flex-demo.svg?style=flat-square)](https://travis-ci.org/brpaz/sf-flex-demo)
+[![Travis CI](https://img.shields.io/travis/brpaz/sf4-example.svg?style=flat-square)](https://travis-ci.org/brpaz/sf4-example)
 
 > Symfony Flex base application
 
