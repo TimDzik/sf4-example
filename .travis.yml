@@ -45,3 +45,6 @@ script:
   #- ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
   - composer test
+
+notifications:
+  email: false
