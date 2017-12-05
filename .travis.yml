@@ -24,6 +24,7 @@ matrix:
 
 before_install:
   - phpenv config-rm xdebug.ini
+  - yes '' | pecl install -f apcu-5.1.8
   - composer self-update
   - composer global require "hirak/prestissimo"
 
